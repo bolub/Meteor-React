@@ -38,5 +38,86 @@ Router.route('/users',{where: 'server'})
         this.response.end(JSON.stringify(response));
     });
 
+
+Router.route('/users/:id',{where: 'server'})
+
+    // GET /message/:id - returns specific records
+
+    .get(function(){
+        var response;
+        if(this.params.id !== undefined) {
+            var data = User.find({_id : this.params.id}).fetch();
+            if(data.length > 0) {
+                response = data
+            } else {
+                response = {
+                    "error" : true,
+                    "message" : "User not found."
+                }
+            }
+        }
+        this.response.setHeader('Content-Type','application/json');
+        this.response.end(JSON.stringify(response));
+    })
+
+
+	// PUT /message/:id {message as put data}- update specific records.
+     .put(function(){
+        var response;
+        if(this.params.id !== undefined) {
+            var data = User.find({_id : this.params.id}).fetch();
+            if(data.length > 0) {
+                if(User.update({_id : data[0]._id},{$set : {UserName : this.request.body.userName,UserPassword : this.request.body.userPassword}}) === 1) {
+                    response = {
+                        "error" : false,
+                        "message" : "User information updated."
+                    }
+                } else {
+                    response = {
+                        "error" : true,
+                        "message" : "User information not updated."
+                    }
+                }
+            } else {
+                response = {
+                    "error" : true,
+                    "message" : "User not found."
+                }
+            }
+        }
+        this.response.setHeader('Content-Type','application/json');
+        this.response.end(JSON.stringify(response));
+    })
+
+
+ // DELETE /message/:id delete specific record.
+
+    .delete(function(){
+        var response;
+        if(this.params.id !== undefined) {
+            var data = User.find({_id : this.params.id}).fetch();
+            if(data.length >  0) {
+                if(User.remove(data[0]._id) === 1) {
+                    response = {
+                        "error" : false,
+                        "message" : "User deleted."
+                    }
+                } else {
+                    response = {
+                        "error" : true,
+                        "message" : "User not deleted."
+                    }
+                }
+            } else {
+                response = {
+                    "error" : true,
+                    "message" : "User not found."
+                }
+            }
+        }
+        this.response.setHeader('Content-Type','application/json');
+        this.response.end(JSON.stringify(response));
+
+
 // 358808081335121
 // 358808081335139
